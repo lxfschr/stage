@@ -23,7 +23,8 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-        hash: true
+        hash: true,
+        filename: __dirname + '/public/index.html'  //relative to root of the application
     })
   ],
   resolve: {

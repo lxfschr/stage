@@ -1,4 +1,5 @@
 import 'main.css';
+import Application from 'components/Application';
 
 const main = async () => {
     const div = document.createElement('div');
@@ -8,6 +9,13 @@ const main = async () => {
     h1.appendChild(h1Text);
     document.body.appendChild(div);
     div.appendChild(h1);
+    const canvas = document.createElement('canvas');
+    canvas.id = 'surface';
+    canvas.width = 800;
+    canvas.height = 600;
+    document.body.appendChild(canvas);
+
+    Application();
 }
 
 main().then(() => console.log('Started'));
