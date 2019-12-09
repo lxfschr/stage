@@ -18,7 +18,7 @@ const main = async () => {
     img.height = 0;
     document.body.appendChild(img);
 
-    Application();
+    window.addEventListener("load", Application);
 }
 
 main().then(() => console.log('Started'));
