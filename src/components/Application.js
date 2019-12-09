@@ -1,32 +1,5 @@
-  var vertexShaderText = 
-[
-'precision mediump float;',
-'',
-'attribute vec3 vertPosition;',
-'attribute vec2 verTexCoord;',
-'varying vec2 fragTexCoord;',
-'uniform mat4 mWorld;',
-'uniform mat4 mView;',
-'uniform mat4 mProj;',
-'',
-'void main()',
-'{',
-'  fragTexCoord = verTexCoord;',
-'  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
-'}'
-].join('\n');
-
-var fragmentShaderText =
-[
-'precision mediump float;',
-'',
-'varying vec2 fragTexCoord;',
-'uniform sampler2D sampler;',
-'void main()',
-'{',
-'  gl_FragColor = texture2D(sampler, fragTexCoord);',
-'}'
-].join('\n');
+import textureShaderVert from 'shaders/texture.vs.glsl';
+import textureShaderFrag from 'shaders/texture.fs.glsl';
 
 class Matrix4 extends Float32Array {
     static identity() {
@@ -64,8 +37,8 @@ async function Application() {
     const vertexShader = gl.createShader(gl.VERTEX_SHADER);
     const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
-    gl.shaderSource(vertexShader, vertexShaderText);
-    gl.shaderSource(fragmentShader, fragmentShaderText);
+    gl.shaderSource(vertexShader, textureShaderVert);
+    gl.shaderSource(fragmentShader, textureShaderFrag);
 
     gl.compileShader(vertexShader);
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {

@@ -22,6 +22,10 @@ const config = {
       {
         test: /\.(png|jp(e*)g|svg)$/,
         use: ['url-loader']
+      },
+      {
+        test: /\.glsl$/,
+        use: ['webpack-glsl-loader']
       }
     ]
   },
