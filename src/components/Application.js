@@ -1,5 +1,5 @@
-import textureShaderVert from 'shaders/texture.vs.glsl';
-import textureShaderFrag from 'shaders/texture.fs.glsl';
+import vShaderSource from 'shaders/texture.vs.glsl';
+import fShaderSource from 'shaders/texture.fs.glsl';
 import Matrix4 from "components/Matrix4";
 import MathUtils from "components/MathUtils";
 import ShaderUtil from "components/ShaderUtil";
@@ -8,8 +8,14 @@ import GLInstance from "components/GLInstance";
 async function Application() {
     let width = 600, height = 480;
     // width = window.innerWidth, height = window.innerHeight;
-    const vShaderSource = textureShaderVert, fShaderSource = textureShaderFrag;
     const gl = GLInstance('surface').fSetSize(width, height).fClear();
+
+    const ELEMENT_TYPE = gl.FLOAT;
+    const ELEMENT_IS_NORMALIZED = gl.FALSE;
+    const ELEMENT_TYPE_SIZE = Float32Array.BYTES_PER_ELEMENT;
+    const VERTEX_STRIDE = 5 * ELEMENT_TYPE_SIZE;
+    const NUM_POSITION_VERTICES = 3;
+    const NUM_UV_VERTICES = 2;
 
     const program = ShaderUtil.shaderProgram(gl, vShaderSource, fShaderSource);
 
@@ -24,24 +30,22 @@ async function Application() {
         0.5, -0.5, 0.0,   0.0, 1.0,
     ];
 
-    const triangleVertexBufferObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexBufferObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleVertices), gl.STATIC_DRAW);
+    const triangleVertexBufferObject = gl.fCreateArrayBuffer(new Float32Array(triangleVertices));
 
     ShaderUtil.enableVertexAttribArray(gl, program, 'vertPosition', 
-        3, // Number of elements per attribute
-        gl.FLOAT, // Type of elements
-        gl.FALSE,
-        5 * Float32Array.BYTES_PER_ELEMENT,// Size of individual vertex
+        NUM_POSITION_VERTICES,
+        ELEMENT_TYPE,
+        ELEMENT_IS_NORMALIZED,
+        VERTEX_STRIDE,
         0 // Offset from the beginning of a single vertex to this attribute)
     );
     
     ShaderUtil.enableVertexAttribArray(gl, program, 'verTexCoord', 
-        2, // Number of elements per attribute
-        gl.FLOAT, // Type of elements
-        gl.FALSE,
-        5 * Float32Array.BYTES_PER_ELEMENT,// Size of individual vertex
-        3 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+        NUM_UV_VERTICES,
+        ELEMENT_TYPE,
+        ELEMENT_IS_NORMALIZED,
+        VERTEX_STRIDE,
+        NUM_POSITION_VERTICES * ELEMENT_TYPE_SIZE // Offset from the beginning of a single vertex to this attribute
     );
 
 
