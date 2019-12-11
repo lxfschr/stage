@@ -1,11 +1,12 @@
 import vShaderSource from 'shaders/texture.vs.glsl';
 import fShaderSource from 'shaders/texture.fs.glsl';
+import GLInstance from "components/GLInstance";
 import Matrix4 from "components/Matrix4";
 import MathUtils from "components/MathUtils";
 import ShaderUtil from "components/ShaderUtil";
-import GLInstance from "components/GLInstance";
+import RenderLoop from 'components/RenderLoop';
 
-async function Application() {
+export default function Application() {
     let width = 600, height = 480;
     // width = window.innerWidth, height = window.innerHeight;
     const gl = GLInstance('surface').fSetSize(width, height).fClear();
@@ -48,12 +49,11 @@ async function Application() {
         NUM_POSITION_VERTICES * ELEMENT_TYPE_SIZE // Offset from the beginning of a single vertex to this attribute
     );
 
-
     //
     // Create Texture
     //
     const texture = ShaderUtil.createTexture(gl, 
-        gl.TEXTURE_2D, // target e.g. TEXTURE_2D, TEXTURE_CUBE_MAP, TEXTURE_3D (WebGL2 only)
+        gl.TEXTURE_2D, // target e.g. TEXTURE_2D, TEXTURE_CUBE_MAP, and TEXTURE_3D (WebGL2 only)
         gl.CLAMP_TO_EDGE, // Wrapping function for s e.g. CLAMP_TO_EDGE, REPEAT, MIRRORED_REPEAT 
         gl.CLAMP_TO_EDGE, // Wrapping function for t e.g. CLAMP_TO_EDGE, REPEAT, MIRRORED_REPEAT 
         gl.LINEAR, // Texture minification filter e.g. LINEAR, NEAREST, NEAREST_MIPMAP_NEAREST
@@ -72,11 +72,11 @@ async function Application() {
     gl.useProgram(program);
 
     const matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
-	const matViewUniformLocation = gl.getUniformLocation(program, 'mView');
-	const matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
+    const matViewUniformLocation = gl.getUniformLocation(program, 'mView');
+    const matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
 
     let worldMatrix = Matrix4.identity();
-	let viewMatrix = new Matrix4();
+    let viewMatrix = new Matrix4();
     let projMatrix = new Matrix4();
 
     const target = [0, 0, 0];
@@ -87,25 +87,26 @@ async function Application() {
     Matrix4.perspective(projMatrix, MathUtils.toRadians(45), width / height, 0.1, 1000.0);
 
     gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-	gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+    gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
     gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
     
     const identityMatrix = Matrix4.identity();
     let angle = 0;
-    const loop = () => {
-        angle = performance.now() / 1000 / 6 * 2 * Math.PI;
+
+    const onRender = (dt) => {
+        if (dt > 1 / 16) {
+            console.warn(`Last frame took ${dt * 1000} ms`);
+        }
+
+        angle += Math.PI / 2 * dt; // Rotate 90 degrees per second
         Matrix4.rotate(worldMatrix, identityMatrix, angle, [0, 1, 0]);
         gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
         gl.clearColor(0.75, 0.85, 0.8, 1.0);
-        gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+        gl.fClear();
 
         gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
 
-        requestAnimationFrame(loop);
-    };
-    
-    requestAnimationFrame(loop);
+    const RLoop = new RenderLoop(onRender).start();
 }
-
-export default Application;
