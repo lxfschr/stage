@@ -119,7 +119,7 @@ export default class Vector3 extends Float32Array {
         const y = a[1];
         const z = a[2];
         const len = x*x + y*y + z*z;
-        // Optimizization to only perform sqrt if it passes checks for 0
+        // Optimization to only perform sqrt if it passes checks for 0
         if (len > 0) {
             len = 1 / Math.sqrt(len);
         }
@@ -130,7 +130,21 @@ export default class Vector3 extends Float32Array {
     }
     normalize() { return Vector3.normalize(this, this); }
 
-
+    static dot(a, b) {
+        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    }
+    dot(...args) { return Vector3.dot(this, ...args); }
+    
+    cross(out, a, b) {
+        const ax = a[0], ay = a[1], az = a[2];
+        const bx = b[0], by = b[1], bz = b[2];
+      
+        out[0] = ay * bz - az * by;
+        out[1] = az * bx - ax * bz;
+        out[2] = ax * by - ay * bx;
+        return out;
+    }
+    cross(...args) { return Vector3.dot(this, this, ...args); }
 }
 
 const ZERO = new Vector3(0, 0, 0);
