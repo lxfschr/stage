@@ -1,11 +1,11 @@
 export default class Matrix4 extends Float32Array {
 
     constructor() {
-        return new Float32Array(16);   
+        super(16);
     }
 
     static identity() {
-        const mat4 = new Float32Array(16);
+        const mat4 = new Matrix4();
         for (let i = 0; i < mat4.length; i+=5) {
             mat4[i] = 1; 
         }
@@ -26,7 +26,7 @@ export default class Matrix4 extends Float32Array {
         return out;
     }
 
-    static lookAt(out, target, center, up) {
+    static lookAt(out, target, cameraPosition, up) {
         let x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
         const targetX = target[0];
         const targetY = target[1];
@@ -34,21 +34,21 @@ export default class Matrix4 extends Float32Array {
         const upX = up[0];
         const upY = up[1];
         const upZ = up[2];
-        const centerX = center[0];
-        const centerY = center[1];
-        const centerZ = center[2];
+        const cameraPositionX = cameraPosition[0];
+        const cameraPositionY = cameraPosition[1];
+        const cameraPositionZ = cameraPosition[2];
 
         const EPSILON = 0.00001;
 
-        if (Math.abs(targetX - centerX) < EPSILON &&
-            Math.abs(targetY - centerY) < EPSILON &&
-            Math.abs(targetZ - centerZ) < EPSILON) {
+        if (Math.abs(targetX - cameraPositionX) < EPSILON &&
+            Math.abs(targetY - cameraPositionY) < EPSILON &&
+            Math.abs(targetZ - cameraPositionZ) < EPSILON) {
             return identity();
         }
 
-        z0 = targetX - centerX;
-        z1 = targetY - centerY;
-        z2 = targetZ - centerZ;
+        z0 = targetX - cameraPositionX;
+        z1 = targetY - cameraPositionY;
+        z2 = targetZ - cameraPositionZ;
 
         len = 1 / Math.hypot(z0, z1, z2);
         z0 *= len;
