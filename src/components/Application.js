@@ -1,11 +1,11 @@
 import vShaderSource from 'shaders/texture.vs.glsl';
 import fShaderSource from 'shaders/texture.fs.glsl';
 import GLInstance from "components/GLInstance";
-import MathUtils from "components/MathUtils";
+import MathUtils from "components/math/MathUtils";
 import ShaderUtil from "components/ShaderUtil";
 import RenderLoop from 'components/RenderLoop';
-import Matrix4 from "components/math/Matrix4";
-import Vector3 from "components/math/Vector3";
+import Mat4 from "components/math/Matrix4x4";
+import Vec3 from "components/math/Vector3";
 
 export default function Application() {
     let width = 600, height = 480;
@@ -76,24 +76,24 @@ export default function Application() {
     const matViewUniformLocation = gl.getUniformLocation(program, 'mView');
     const matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
 
-    let worldMatrix = Matrix4.identity();
-    let viewMatrix = new Matrix4();
-    let projMatrix = new Matrix4();
+    let worldMatrix = Mat4.identity();
+    let viewMatrix = new Mat4();
+    let projMatrix = new Mat4();
 
-    const target = Vector3.ZERO;
-    const cameraPosition = new Vector3(0, 0, -5);
-    console.log('adbg: Application -> cameraPosition', Vector3.add(cameraPosition, cameraPosition, [0, 1, 0]));
+    const target = Vec3.ZERO;
+    const cameraPosition = new Vec3(0, 0, -5);
+    console.log('adbg: Application -> cameraPosition', Vec3.add(cameraPosition, cameraPosition, [0, 1, 0]));
     console.log('adbg: Application -> cameraPosition', cameraPosition.add([0, 1, 0]));
-    const cameraUp = Vector3.UNIT_Y;
-    Matrix4.lookAt(viewMatrix, cameraPosition, target, cameraUp);
+    const cameraUp = Vec3.UNIT_Y;
+    Mat4.lookAt(viewMatrix, cameraPosition, target, cameraUp);
 
-    Matrix4.perspective(projMatrix, MathUtils.toRadians(45), width / height, 0.1, 1000.0);
+    Mat4.perspective(projMatrix, MathUtils.toRadians(45), width / height, 0.1, 1000.0);
 
     gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
     gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
     gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
     
-    const identityMatrix = Matrix4.identity();
+    const identityMatrix = Mat4.identity();
     let angle = 0;
 
     const onRender = (dt) => {
@@ -102,7 +102,8 @@ export default function Application() {
         }
 
         angle += Math.PI / 2 * dt; // Rotate 90 degrees per second
-        Matrix4.rotate(worldMatrix, identityMatrix, angle, Vector3.UNIT_Y);
+        Mat4.rotate(worldMatrix, identityMatrix, angle, Vec3.UNIT_Y);
+        // Mat4.fromRotation(worldMatrix, angle);
         gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
         gl.clearColor(0.75, 0.85, 0.8, 1.0);

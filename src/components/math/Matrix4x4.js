@@ -1,11 +1,11 @@
-export default class Matrix4 extends Float32Array {
+export default class Matrix4x4 extends Float32Array {
 
     constructor() {
         super(16);
     }
 
     static identity() {
-        const mat4 = new Matrix4();
+        const mat4 = new Matrix4x4();
         for (let i = 0; i < mat4.length; i+=5) {
             mat4[i] = 1; 
         }
@@ -13,16 +13,14 @@ export default class Matrix4 extends Float32Array {
     }
 
     static rotate(out, a, rad) {
-        var a0 = a[0],
-            a1 = a[1],
-            a2 = a[2],
-            a3 = a[3];
-        var s = Math.sin(rad);
-        var c = Math.cos(rad);
-        out[0] = a0 * c + a2 * s;
-        out[1] = a1 * c + a3 * s;
-        out[2] = a0 * -s + a2 * c;
-        out[3] = a1 * -s + a3 * c;
+        const x0 = a[0], x1 = a[1],
+              y0 = a[2], y1 = a[3];
+        const s = Math.sin(rad);
+        const c = Math.cos(rad);
+        out[0] = x0 *  c + y0 * s;
+        out[1] = x1 *  c + y1 * s;
+        out[2] = x0 * -s + y0 * c;
+        out[3] = x1 * -s + y1 * c;
         return out;
     }
 
