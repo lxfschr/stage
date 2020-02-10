@@ -26,12 +26,6 @@ export default class Vector3 extends Float32Array {
     }
     static copy(...args) { return Vector3.copy(...args); }
 
-    static get ZERO() { return ZERO; }
-    static get ONE() { return ONE; }
-    static get UNIT_X() { return UNIT_X; }
-    static get UNIT_Y() { return UNIT_Y; }
-    static get UNIT_Z() { return UNIT_Z; }
-
     set x(v) { this[0] = v; }
     set y(v) { this[1] = v; }
     set z(v) { this[2] = v; }
@@ -277,6 +271,12 @@ export default class Vector3 extends Float32Array {
                 Math.abs(a1 - b1) <= MathUtils.EPSILON*Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
                 Math.abs(a2 - b2) <= MathUtils.EPSILON*Math.max(1.0, Math.abs(a2), Math.abs(b2)));
     }
+
+    static get ZERO() { return ZERO; }
+    static get ONE() { return ONE; }
+    static get UNIT_X() { return UNIT_X; }
+    static get UNIT_Y() { return UNIT_Y; }
+    static get UNIT_Z() { return UNIT_Z; }
 }
 
 const ZERO = new Vector3(0, 0, 0);
