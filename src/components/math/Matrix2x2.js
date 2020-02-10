@@ -1,3 +1,5 @@
+import MathUtils from "./MathUtils";
+
 export default class Matrix2x2 extends Float32Array {
 
     constructor() {
@@ -56,7 +58,7 @@ export default class Matrix2x2 extends Float32Array {
         out[3] = m11;
         return out;
     }
-    transpose(...args) { return Matrix2x2.transpose(this, ...args); }
+    set(...args) { return Matrix2x2.set(this, ...args); }
 
     static transpose(out, a) {
         if (out === a) {

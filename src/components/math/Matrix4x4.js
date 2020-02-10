@@ -1,3 +1,5 @@
+import MathUtils from "./MathUtils";
+
 export default class Matrix4x4 extends Float32Array {
 
     constructor() {
