@@ -105,7 +105,7 @@ export default class Matrix4x4 extends Float32Array {
     }
 
     static perspective(out, fovy, aspect, near, far) {
-        let f = 1.0 / Math.tan(fovy / 2), nf;
+        const f = 1.0 / Math.tan(fovy / 2);
         out[0] = f / aspect;
         out[1] = 0;
         out[2] = 0;
@@ -121,7 +121,7 @@ export default class Matrix4x4 extends Float32Array {
         out[13] = 0;
         out[15] = 0;
         if (far != null && far !== Infinity) {
-          nf = 1 / (near - far);
+          const nf = 1 / (near - far);
           out[10] = (far + near) * nf;
           out[14] = (2 * far * near) * nf;
         } else {
